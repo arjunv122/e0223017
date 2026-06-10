@@ -1,35 +1,20 @@
-// ============================================================
-// AUTH CONFIG — Token Management for Evaluation Service
-// Token TTL is ~15 minutes, so we refresh aggressively
-// ============================================================
-
 import axios from "axios";
 import { Log } from "../../../logging_middleware/index.js";
 
 let cachedToken = null;
 let tokenFetchedAt = 0;
-const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; // Refresh every 10 min
+const TOKEN_REFRESH_MS = 10 * 60 * 1000; // refresh every 10 min
 
-/**
- * Fetch a Bearer token from the evaluation service.
- * Caches the token and auto-refreshes when it's about to expire.
- *
- * @returns {Promise<string|null>} The access token or null on failure
- */
 export async function getAuthToken() {
   const now = Date.now();
-
-  // A — Return cached token if still fresh
-  if (cachedToken && (now - tokenFetchedAt) < TOKEN_REFRESH_INTERVAL_MS) {
+  if (cachedToken && (now - tokenFetchedAt) < TOKEN_REFRESH_MS) {
     return cachedToken;
   }
 
-  // B — Build auth URL at call time (after dotenv has loaded)
   const AUTH_URL = `${process.env.EVALUATION_BASE_URL}/auth`;
 
-  // C — Request a fresh token
   try {
-    Log("backend", "info", "auth", `Requesting fresh auth token from ${AUTH_URL}`);
+    Log("backend", "info", "auth", `Requesting token from ${AUTH_URL}`);
 
     const response = await axios.post(AUTH_URL, {
       email: process.env.AUTH_EMAIL,
@@ -42,11 +27,10 @@ export async function getAuthToken() {
 
     cachedToken = response.data.access_token;
     tokenFetchedAt = Date.now();
-
-    Log("backend", "info", "auth", "Auth token refreshed successfully");
+    Log("backend", "info", "auth", "Token refreshed");
     return cachedToken;
   } catch (err) {
-    Log("backend", "error", "auth", `Failed to fetch token: ${err.message}`);
+    Log("backend", "error", "auth", `Token fetch failed: ${err.message}`);
     return null;
   }
 }

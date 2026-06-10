@@ -1,22 +1,10 @@
-// ============================================================
-// NOTIFICATION CARD — Reusable card component for a notification
-// Distinguishes between new and viewed notifications
-// ============================================================
-
-import {
-  Card,
-  CardContent,
-  Typography,
-  Chip,
-  Box,
-  alpha,
-} from "@mui/material";
+import { Card, CardContent, Typography, Chip, Box, alpha } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import WorkIcon from "@mui/icons-material/Work";
 import FiberNewIcon from "@mui/icons-material/FiberNew";
 
-// ── Type Configuration ────────────────────────────────────────
+// color config per notification type
 const TYPE_CONFIG = {
   Placement: {
     icon: WorkIcon,
@@ -45,15 +33,11 @@ function NotificationCard({ notification, isNew = false, showPriority = false })
   const config = TYPE_CONFIG[notification.Type] || TYPE_CONFIG.Event;
   const IconComponent = config.icon;
 
-  // Format timestamp
   const formatTime = (timestamp) => {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diff = now - date;
+    const diff = new Date() - new Date(timestamp);
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
-
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     return `${days}d ago`;
@@ -77,48 +61,23 @@ function NotificationCard({ notification, isNew = false, showPriority = false })
     >
       <CardContent sx={{ py: 1.5, px: 2, "&:last-child": { pb: 1.5 } }}>
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
-          {/* Type Icon */}
           <Box
             sx={{
-              p: 1,
-              borderRadius: 2,
-              bgcolor: config.bgColor,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              mt: 0.3,
+              p: 1, borderRadius: 2, bgcolor: config.bgColor,
+              display: "flex", alignItems: "center", justifyContent: "center", mt: 0.3,
             }}
           >
             <IconComponent sx={{ color: config.color, fontSize: 22 }} />
           </Box>
 
-          {/* Content */}
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexWrap: "wrap",
-                gap: 0.5,
-                mb: 0.5,
-              }}
-            >
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 0.5, mb: 0.5 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Chip
-                  label={config.label}
-                  size="small"
-                  sx={{
-                    bgcolor: config.bgColor,
-                    color: config.color,
-                    fontWeight: 600,
-                    fontSize: "0.7rem",
-                    height: 22,
-                  }}
+                  label={config.label} size="small"
+                  sx={{ bgcolor: config.bgColor, color: config.color, fontWeight: 600, fontSize: "0.7rem", height: 22 }}
                 />
-                {isNew && (
-                  <FiberNewIcon sx={{ color: "#ff5252", fontSize: 18 }} />
-                )}
+                {isNew && <FiberNewIcon sx={{ color: "#ff5252", fontSize: 18 }} />}
                 {showPriority && notification.priorityScore && (
                   <Typography variant="caption" sx={{ color: "#9fa8da", fontSize: "0.65rem" }}>
                     Score: {Math.round(notification.priorityScore / 1e10)}
@@ -132,11 +91,7 @@ function NotificationCard({ notification, isNew = false, showPriority = false })
 
             <Typography
               variant="body2"
-              sx={{
-                color: isNew ? "#e8eaf6" : "#9fa8da",
-                fontWeight: isNew ? 500 : 400,
-                lineHeight: 1.5,
-              }}
+              sx={{ color: isNew ? "#e8eaf6" : "#9fa8da", fontWeight: isNew ? 500 : 400, lineHeight: 1.5 }}
             >
               {notification.Message}
             </Typography>

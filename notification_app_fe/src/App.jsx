@@ -1,7 +1,3 @@
-// ============================================================
-// APP — Root Component with Navigation & Routing
-// ============================================================
-
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AllNotifications from "./pages/AllNotifications";

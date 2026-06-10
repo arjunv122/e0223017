@@ -1,17 +1,7 @@
-// ============================================================
-// NAVBAR — Top Navigation Bar with page links
-// ============================================================
-
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  useMediaQuery,
-  useTheme,
-  IconButton,
+  AppBar, Toolbar, Typography, Button, Box,
+  useMediaQuery, useTheme, IconButton,
 } from "@mui/material";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
@@ -36,7 +26,6 @@ function Navbar() {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Logo */}
         <Box
           sx={{ display: "flex", alignItems: "center", gap: 1, cursor: "pointer" }}
           onClick={() => navigate("/")}
@@ -57,7 +46,6 @@ function Navbar() {
           )}
         </Box>
 
-        {/* Navigation Links */}
         <Box sx={{ display: "flex", gap: 1 }}>
           {isMobile ? (
             <>
@@ -74,9 +62,7 @@ function Navbar() {
                 onClick={() => navigate("/priority")}
                 sx={{
                   color: isActive("/priority") ? "#7c4dff" : "#9fa8da",
-                  bgcolor: isActive("/priority")
-                    ? "rgba(124, 77, 255, 0.15)"
-                    : "transparent",
+                  bgcolor: isActive("/priority") ? "rgba(124, 77, 255, 0.15)" : "transparent",
                 }}
               >
                 <PriorityHighIcon />
@@ -91,9 +77,7 @@ function Navbar() {
                   color: isActive("/") ? "#fff" : "#9fa8da",
                   bgcolor: isActive("/") ? "rgba(124, 77, 255, 0.2)" : "transparent",
                   "&:hover": { bgcolor: "rgba(124, 77, 255, 0.15)" },
-                  textTransform: "none",
-                  fontWeight: 600,
-                  px: 2,
+                  textTransform: "none", fontWeight: 600, px: 2,
                 }}
               >
                 All Notifications
@@ -103,13 +87,9 @@ function Navbar() {
                 onClick={() => navigate("/priority")}
                 sx={{
                   color: isActive("/priority") ? "#fff" : "#9fa8da",
-                  bgcolor: isActive("/priority")
-                    ? "rgba(124, 77, 255, 0.2)"
-                    : "transparent",
+                  bgcolor: isActive("/priority") ? "rgba(124, 77, 255, 0.2)" : "transparent",
                   "&:hover": { bgcolor: "rgba(124, 77, 255, 0.15)" },
-                  textTransform: "none",
-                  fontWeight: 600,
-                  px: 2,
+                  textTransform: "none", fontWeight: 600, px: 2,
                 }}
               >
                 Priority Inbox

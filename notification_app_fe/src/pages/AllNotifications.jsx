@@ -1,22 +1,10 @@
-// ============================================================
-// ALL NOTIFICATIONS PAGE — Lists all notifications with filters
-// Tracks viewed notifications in localStorage to distinguish new vs viewed
-// ============================================================
-
 import { useState, useEffect, useCallback } from "react";
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Alert,
-  Container,
-} from "@mui/material";
+import { Box, Typography, CircularProgress, Alert, Container } from "@mui/material";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import NotificationCard from "../components/NotificationCard";
 import FilterBar from "../components/FilterBar";
 import { getNotifications } from "../api/notificationApi";
 
-// ── LocalStorage key for tracking viewed notification IDs ─────
 const VIEWED_KEY = "notifyhub_viewed_ids";
 
 function getViewedIds() {
@@ -38,13 +26,10 @@ function AllNotifications() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [viewedIds, setViewedIds] = useState(getViewedIds());
-
-  // ── Filters & Pagination ──────────────────────────────────
   const [notificationType, setNotificationType] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  // ── Fetch Notifications ───────────────────────────────────
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -56,10 +41,9 @@ function AllNotifications() {
       const items = data.notifications || [];
       setNotifications(items);
 
-      // Mark fetched notifications as viewed after a short delay
+      // mark as viewed after 2s so user sees the "new" badge briefly
       setTimeout(() => {
-        const ids = items.map((n) => n.ID);
-        markAsViewed(ids);
+        markAsViewed(items.map((n) => n.ID));
         setViewedIds(getViewedIds());
       }, 2000);
     } catch (err) {
@@ -69,13 +53,10 @@ function AllNotifications() {
     }
   }, [page, limit, notificationType]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   return (
     <Container maxWidth="md" sx={{ py: 2 }}>
-      {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
         <NotificationsActiveIcon sx={{ color: "#7c4dff", fontSize: 32 }} />
         <Typography
@@ -91,48 +72,34 @@ function AllNotifications() {
         </Typography>
       </Box>
 
-      {/* Filter Bar */}
       <FilterBar
-        notificationType={notificationType}
-        setNotificationType={setNotificationType}
-        limit={limit}
-        setLimit={setLimit}
-        page={page}
-        setPage={setPage}
+        notificationType={notificationType} setNotificationType={setNotificationType}
+        limit={limit} setLimit={setLimit}
+        page={page} setPage={setPage}
         totalCount={notifications.length}
       />
 
-      {/* Loading */}
       {loading && (
         <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
           <CircularProgress sx={{ color: "#7c4dff" }} />
         </Box>
       )}
 
-      {/* Error */}
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-      {/* Notification List */}
       {!loading && !error && notifications.length === 0 && (
         <Box sx={{ textAlign: "center", py: 6 }}>
-          <Typography variant="h6" sx={{ color: "#9fa8da" }}>
-            No notifications found
-          </Typography>
+          <Typography variant="h6" sx={{ color: "#9fa8da" }}>No notifications found</Typography>
         </Box>
       )}
 
-      {!loading &&
-        notifications.map((notification) => (
-          <NotificationCard
-            key={notification.ID}
-            notification={notification}
-            isNew={!viewedIds.has(notification.ID)}
-          />
-        ))}
+      {!loading && notifications.map((notification) => (
+        <NotificationCard
+          key={notification.ID}
+          notification={notification}
+          isNew={!viewedIds.has(notification.ID)}
+        />
+      ))}
     </Container>
   );
 }

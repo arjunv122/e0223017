@@ -5,28 +5,13 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import App from "./App";
 import "./index.css";
 
-// ── MUI Dark Theme ────────────────────────────────────────────
 const darkTheme = createTheme({
   palette: {
     mode: "dark",
-    primary: {
-      main: "#7c4dff",
-      light: "#b47cff",
-      dark: "#3f1dcb",
-    },
-    secondary: {
-      main: "#00e5ff",
-      light: "#6effff",
-      dark: "#00b2cc",
-    },
-    background: {
-      default: "#0a0e1a",
-      paper: "#121829",
-    },
-    text: {
-      primary: "#e8eaf6",
-      secondary: "#9fa8da",
-    },
+    primary: { main: "#7c4dff", light: "#b47cff", dark: "#3f1dcb" },
+    secondary: { main: "#00e5ff", light: "#6effff", dark: "#00b2cc" },
+    background: { default: "#0a0e1a", paper: "#121829" },
+    text: { primary: "#e8eaf6", secondary: "#9fa8da" },
     success: { main: "#69f0ae" },
     warning: { main: "#ffd740" },
     error: { main: "#ff5252" },
@@ -50,9 +35,7 @@ const darkTheme = createTheme({
       },
     },
     MuiChip: {
-      styleOverrides: {
-        root: { fontWeight: 600 },
-      },
+      styleOverrides: { root: { fontWeight: 600 } },
     },
   },
 });
