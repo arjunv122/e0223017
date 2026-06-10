@@ -4,6 +4,7 @@
 // ============================================================
 
 import axios from "axios";
+import { Log } from "../../../logging_middleware/index.js";
 
 let cachedToken = null;
 let tokenFetchedAt = 0;
@@ -28,7 +29,7 @@ export async function getAuthToken() {
 
   // C — Request a fresh token
   try {
-    console.log(`[AUTH] Requesting fresh auth token from ${AUTH_URL}...`);
+    Log("backend", "info", "auth", `Requesting fresh auth token from ${AUTH_URL}`);
 
     const response = await axios.post(AUTH_URL, {
       email: process.env.AUTH_EMAIL,
@@ -42,10 +43,10 @@ export async function getAuthToken() {
     cachedToken = response.data.access_token;
     tokenFetchedAt = Date.now();
 
-    console.log("[AUTH] Token refreshed successfully");
+    Log("backend", "info", "auth", "Auth token refreshed successfully");
     return cachedToken;
   } catch (err) {
-    console.error(`[AUTH] Failed to fetch token: ${err.message}`);
+    Log("backend", "error", "auth", `Failed to fetch token: ${err.message}`);
     return null;
   }
 }

@@ -34,6 +34,7 @@ app.use("/api", notificationRoutes);
 
 // ── Health Check ──────────────────────────────────────────────
 app.get("/", (req, res) => {
+  log.info("route", "Health check endpoint hit");
   res.json({ success: true, message: "Notification Platform Backend is running" });
 });
 
@@ -55,10 +56,7 @@ async function startServer() {
 
     // B — Start Express
     app.listen(PORT, () => {
-      log.info("config", `Server started on port ${PORT}`);
-      console.log(`\n✅ Notification Backend running on http://localhost:${PORT}`);
-      console.log(`   Test: http://localhost:${PORT}/api/notifications`);
-      console.log(`   Priority: http://localhost:${PORT}/api/notifications/priority?n=10`);
+      log.info("config", `Server started successfully on port ${PORT}`);
     });
   } catch (err) {
     log.fatal("config", `Failed to start server: ${err.message}`);
