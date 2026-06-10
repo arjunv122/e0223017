@@ -214,28 +214,9 @@ CREATE INDEX idx_notifications_created ON notifications(createdAt DESC);
 
 I used `ON DELETE CASCADE` so when a student is removed, their notifications get cleaned up automatically. UUIDs for notification IDs because they're globally unique and non-sequential (better for security than auto-increment).
 
-### ER Diagram
+### Relationship
 
-```mermaid
-erDiagram
-    STUDENTS {
-        int id PK
-        varchar studentID UK
-        varchar name
-        varchar email UK
-        timestamp createdAt
-    }
-    NOTIFICATIONS {
-        uuid id PK
-        int studentID FK
-        notification_type notificationType
-        text message
-        boolean isRead
-        timestamp createdAt
-        timestamp updatedAt
-    }
-    STUDENTS ||--o{ NOTIFICATIONS : "receives"
-```
+One student can have many notifications (one-to-many). The `studentID` in the notifications table is a foreign key pointing to the students table.
 
 ### Scaling Considerations
 
@@ -607,21 +588,7 @@ function dlq_retry_worker():
 
 ### Architecture
 
-```mermaid
-flowchart LR
-    A["API: notify_all()"] --> B["Bulk INSERT\ninto PostgreSQL"]
-    A --> C["Publish to\nMessage Queue"]
-    C --> D["Worker 1"]
-    C --> E["Worker 2"]
-    C --> F["Worker N"]
-    D --> G{"send_email\nsuccess?"}
-    G -->|Yes| H["Done"]
-    G -->|No| I["Dead Letter\nQueue"]
-    I --> J["DLQ Retry\nWorker"]
-    J --> K{"retry_count\n< MAX?"}
-    K -->|Yes| G
-    K -->|No| L["Log Permanent\nFailure"]
-```
+The flow goes like this: `notify_all()` does a bulk INSERT into PostgreSQL first, then publishes batches to a message queue. Multiple workers consume from the queue and attempt to send emails/push notifications. If a send fails, it goes to a Dead Letter Queue. A DLQ retry worker picks it up and retries with exponential backoff. After max retries, it logs a permanent failure.
 
 ### What Changed
 
